@@ -8,72 +8,74 @@ import (
 
 var alphabet string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-func fulfillFreeSpaces(matriz *[12][12]string) {
+func fulfillFreeSpaces(matriz *[7][7]string) {
 	for i := 0; i < len(*matriz); i++ {
 		for j := 0; j < len(matriz[i]); j++ {
 			if matriz[i][j] == "[ ]" {
 				rand.Seed(time.Now().UnixNano())
-				randomIndex := rand.Intn(26)
+				randomIndex := rand.Intn(27)
 				matriz[i][j] = "[" + string(alphabet[randomIndex]) + "]"
 			}
 		}
 	}
 }
 
-//func verifyCommonLetter(letter string, word string) bool {}
-
-func setLocationAxisX(matriz *[12][12]string, word string) {
+func setLocationAxisX(matriz *[7][7]string, word string) {
 	rand.Seed(time.Now().UnixNano())
-	randomRow := rand.Intn(12)
-	randomColumn := rand.Intn(13 - len(word)) // subtract the word size to avoid false printing
-	position := 0                             // set up an iterator for the word parameter
+	randomRowPosition := rand.Intn(7)
+	randomColumnPosition := rand.Intn(8 - len(word)) // subtract the word size to avoid false printing
+	position := 0                                    // set up an iterator for the word parameter
 
 	// testing spaces
 	for i := 0; i < len(word); i++ {
-		//commonLetter := verifyCommonLetter(matriz[randomRow][i+randomColumn], word)
-		if matriz[randomRow][i+randomColumn] != "[ ]" {
-			println("!!!!!!!!One of the spaces is already filled, trying again!!!!!!!!")
+		if matriz[randomRowPosition][i+randomColumnPosition] != "[ ]" {
+			if string(word[i]) == string(matriz[randomRowPosition][i+randomColumnPosition][1]) {
+				continue
+			}
 			setLocationAxisX(matriz, word)
 			return
 		}
 	}
 
 	// fulfillment spaces
-	for i := randomColumn; i < (randomColumn + len(word)); i++ {
-		matriz[randomRow][i] = "[" + string(word[position]) + "]"
+	for i := randomColumnPosition; i < (randomColumnPosition + len(word)); i++ {
+		matriz[randomRowPosition][i] = "[" + string(word[position]) + "]"
 		position++
 	}
 }
 
 // Similar to the setLocationAxisX function, set rows instead of columns as the main parameter
-func setLocationAxisY(matriz *[12][12]string, word string) {
+func setLocationAxisY(matriz *[7][7]string, word string) {
 	rand.Seed(time.Now().UnixNano())
-	randomColumn := rand.Intn(12)
-	randomRow := rand.Intn(13 - len(word))
+	randomColumnPosition := rand.Intn(7)
+	randomRowPosition := rand.Intn(8 - len(word))
 	position := 0
 
 	for i := 0; i < len(word); i++ {
-		//commonLetter := verifyCommonLetter(matriz[randomRow][i+randomColumn], word)
-		if matriz[i+randomRow][randomColumn] != "[ ]" {
-			println("!!!!!!!!One of the spaces is already filled, trying again!!!!!!!!")
-			setLocationAxisY(matriz, word)
+		if matriz[i+randomRowPosition][randomColumnPosition] != "[ ]" {
+			if string(word[i]) == string(matriz[i+randomRowPosition][randomColumnPosition][1]) {
+				continue
+			}
+			setLocationAxisX(matriz, word)
 			return
 		}
 	}
 
-	for i := randomRow; i < (randomRow + len(word)); i++ {
-		matriz[i][randomColumn] = "[" + string(word[position]) + "]"
+	for i := randomRowPosition; i < (randomRowPosition + len(word)); i++ {
+		matriz[i][randomColumnPosition] = "[" + string(word[position]) + "]"
 		position++
 	}
 }
 
 func main() {
 
-	wordsX := []string{"BIRD", "FISH", "TREE", "FOUR", "LION"}
-	wordsY := []string{"RAIN", "BOOK", "LOVE", "MOON", "SONG"}
+	//wordsX := []string{"BIRD", "FISH", "TREE", "FOUR", "LION"}
+	//wordsY := []string{"RAIN", "BOOK", "LOVE", "MOON", "SONG"}
+	wordsX := []string{"MACACO", "ARROZ", "BOLO", "OVO"}
+	wordsY := []string{"JOGO", "FACA", "TATOO"}
 
 	// make sure to adjust the matrix size in the function parameters above accordingly
-	matriz := [12][12]string{}
+	matriz := [7][7]string{}
 
 	for i := 0; i < len(matriz); i++ {
 		for j := 0; j < len(matriz[i]); j++ {
@@ -89,7 +91,7 @@ func main() {
 		setLocationAxisX(&matriz, word)
 	}
 
-	fulfillFreeSpaces(&matriz)
+	//fulfillFreeSpaces(&matriz)
 
 	println("----------- FINAL RESULT -----------")
 	for i := 0; i < len(matriz); i++ {
